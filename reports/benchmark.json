@@ -1,0 +1,19 @@
+{
+  "dataset": "Open-Meteo Historical Weather API, ERA5 daily maximum temperature",
+  "source_url": "https://open-meteo.com/en/docs/historical-weather-api",
+  "input_sha256": "49ef3e44f7a1efcbd0c9cb760c977f8e02e7d785880b677c94c27c6de97ab783",
+  "records": 54790,
+  "locations": 5,
+  "date_range": ["1991-01-01", "2020-12-31"],
+  "baseline_end": "2010-12-31",
+  "evaluation_start": "2011-01-01",
+  "evaluation_end": "2020-12-31",
+  "baseline_percentile": 0.95,
+  "evaluation_days": 18265,
+  "relative_heat_days": 1252,
+  "relative_heat_day_rate": 0.06854640021899808,
+  "three_day_heatwave_ends": 571,
+  "mean_city_threshold_c": 33.695999999999984,
+  "method": "Per-location 95th-percentile daily maximum temperature fitted on 1991-2010; fixed threshold evaluated on 2011-2020; heatwave end requires three consecutive days at/above threshold.",
+  "limitations": "ERA5 is gridded reanalysis, not a local station observation. Relative historical heat exposure is not an individual health-risk estimate; humidity, built environment, vulnerability, cooling access, and official warnings are not modeled."
+}
