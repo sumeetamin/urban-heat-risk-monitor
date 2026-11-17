@@ -1,38 +1,19 @@
 # Urban Heat Risk Monitor
 
-Summarize unusually hot days by location against a transparent local historical percentile baseline.
+A city-level historical heat exposure monitor with a frozen reference period. It estimates a local high-temperature threshold, then summarizes later heat days and three-day runs.
 
-> **Portfolio prototype.** Source code is provided; no benchmark results are claimed until you run it on the cited data and record the output.
+## Data and reproducibility
 
-## Use case
+The benchmark uses Open-Meteo's Historical Weather API with ERA5 daily maximum 2 m temperature for five US city grid points (Chicago, Houston, Miami, New York, Phoenix), 1991–2020. Open-Meteo documents ERA5 reanalysis as gridded historical weather and licenses its API data under CC BY 4.0; attribution is required. This CSV snapshot has SHA-256 \`49ef3e44f7a1efcbd0c9cb760c977f8e02e7d785880b677c94c27c6de97ab783\`.
 
-Summarize unusually hot days by location against a transparent local historical percentile baseline. The CLI consumes local files, emits reproducible reports, and keeps data out of the repository.
+\`\`\`bash
+python -m pip install -r requirements.txt
+python fetch_data.py
+python main.py --input data/openmeteo_era5_daily_tmax.csv --baseline-end 2010-12-31 --percentile 0.95 --out outputs
+\`\`\`
 
-## Data and provenance
+## Holdout summary
 
-[NOAA NCEI Daily Summaries (token may be required)](https://www.ncei.noaa.gov/cdo-web/datasets). A joined daily-weather and location CSV with date, location, and maximum temperature in Celsius. Use a declared historical baseline in operational work. Source files are not bundled. Respect source terms and cite the dataset when publishing results.
+Each city's 95th-percentile daily maximum temperature is estimated on 1991–2010 and held fixed for 2011–2020. Across 18,265 later city-days, 1,252 (6.85%) reached or exceeded their local baseline threshold; 571 observations marked the end of a run of at least three consecutive threshold days. Full aggregate metrics are in [\`outputs/benchmark.json\`](outputs/benchmark.json) locally and the published aggregate copy in [\`reports/benchmark.json\`](reports/benchmark.json).
 
-## Quick start
-
-```bash
-python -m venv .venv
-# Windows: .venv\\Scripts\\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-# Download/prepare the source data locally, then run:
-python main.py --input data/daily_weather.csv --date date --location county --tmax tmax_c --out outputs
-```
-
-## Outputs
-
-Generated results are saved under `outputs/`; file names and metrics are printed or documented by the CLI. The repository excludes downloaded data and artifacts.
-
-## Evaluation and operating notes
-
-The prototype compares locations with their own temperature history; it does not estimate individual health risk or account for humidity, housing, age, or access to cooling.
-
-For production use, add a frozen reference period, out-of-time evaluation, monitoring ownership, and a documented rollback or escalation path. This project is a local baseline, not a deployed service.
-
-## License
-
-No code license file is included yet. Third-party data remains subject to its source terms.
+These are relative exposure summaries, not evidence of individual health risk. ERA5 grid estimates are not local station observations and do not account for humidity, neighborhood variation, housing, vulnerability, cooling access, or official warnings. Do not use as an emergency or medical alert.
